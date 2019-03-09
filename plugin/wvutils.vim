@@ -10,18 +10,6 @@ endif
 let g:wvutils_exits = 1
 " 避免一个插件被加载多次
 
-" !表示这个函数可以被安全的重载
-function! s:PrintHighLineStr(arg,flag)
-	if a:flag == 1
-		echohl Title " 高亮以下内容 注意以下一定要a:打头，否者调用不到arg这个内部变量
-	endif
-	echo a:arg
-	if a:flag == 1
-		echohl None  " 结束高亮显示
-	endif
-	return
-endfunction
-
 function! s:AddTextToFile()
 	let failed = append(3, "the beginning")
 	return
@@ -52,26 +40,26 @@ function! s:SplitDraft()
 	return
 endfunction
 
-"call s:PrintHighLineStr("-- 欢迎进入vim世界 --",1)
+"call minifuctionsets#version("-- 欢迎进入vim世界 --",1)
 
 let s:wvutils_version = 'v1.0.1'
 if !exists('s:wvutils_version')
 	let s:wvutils_version = 'v1.0.0(init)'
 endif
-"call s:PrintHighLineStr("wvutils plugins version: ".s:wvutils_version,0)
+"call minifuctionsets#version("wvutils plugins version: ".s:wvutils_version,0)
 
 " 休眠时间，以毫秒计算
 "sleep 40m
 
 " 得到一个临时文件的名称
 "let s:tmpfile = tempname()
-"call s:PrintHighLineStr('生产一个临时文件：'.s:tmpfile,0)
+"call minifuctionsets#version('生产一个临时文件：'.s:tmpfile,0)
 
 "　输入字符串
 "let s:inputmsg = input('输入想要保存的内容: ')
 "try
 "	call writefile([s:inputmsg],s:tmpfile,'a')
-"	call s:PrintHighLineStr('写入临时文件：'.s:tmpfile.' 成功',0)
+"	call minifuctionsets#version('写入临时文件：'.s:tmpfile.' 成功',0)
 "catch
 "	echo '写入文件 ' . s:tmpfile . ' 失败!'
 "endtry
@@ -82,7 +70,7 @@ endif
 " 注意此处的定义方式
 "call wvutils#welcome()
 function! g:wvutils#welcome()
-	call s:PrintHighLineStr("当前wvutils模块的版本:".s:wvutils_version,1)
+	call minifuctionsets#message("当前wvutils模块的版本:".s:wvutils_version,1)
 endfunction
 function! g:wvutils#version()
 	return	s:wvutils_version
@@ -90,6 +78,6 @@ endfunction
 
 " 自定义命令,注意命令的首字母必须要大写
 " :WvuFight <cr> 这样就能调用
-command! -nargs=0 WvuFight call s:PrintHighLineStr("祝你好运",1)
-command! -nargs=0 WvuText  call s:AddTextToFile()
+command! -nargs=0 WvuFight  call minifuctionsets#message("祝你好运",1)
+command! -nargs=0 WvuText   call s:AddTextToFile()
 command! -nargs=0 WvuDraft  call s:SplitDraft()
