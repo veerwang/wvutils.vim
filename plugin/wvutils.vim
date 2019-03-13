@@ -3,19 +3,35 @@
 " Maintainer:   kevin.wang kevin.wang2004@hotmail.com	
 " License:	This file is placed in the public domain.
 
+" 变量说明
+"“$”——访问环境变量；
+"“&”——访问 Vim 选项；
+"“@”——访问寄存器。
+"
+"
+"“b:”——只对当前缓冲区（buffer）有效的变量；
+"“w:”——只对当前编辑窗口（window）有效的变量。
+"“g:”——全局变量（在函数中访问全局变量必须使用该前缀，不加前缀的话则认为是函数内的局部变量）；
+"“s:”——变量名只在当前脚本中有效；
+"“a:”——函数的参数；
+"“v:”——Vim 内部预定义的特殊变量（参见“:help vim-variable”）。
+
 " 避免一个插件被加载多次
 if exists('g:wvutils_exits') 
 	finish
 endif
 let g:wvutils_exits = 1
+
 " 避免一个插件被加载多次
 
-function! s:AddTextToFile()
-	let failed = append(3, "the beginning")
+" 在当前打开的文件下，写入一个字符串
+" <SID> 的作用是使得函数生成一个唯一的ID数值
+function! <SID>AddTextToFile(pos,astring)
+	let failed = append(a:pos, a:astring)
 	return
 endfunction
 
-function! s:SplitDraft()
+function! <SID>SplitDraft()
 	if !exists('g:wvu_draftpath')
 		let g:wvu_draftpath = '/home/kevin/.vim/__DRAFT__'
 	endif
@@ -35,7 +51,7 @@ function! s:SplitDraft()
 
 	silent! execute 'vertical ' . '35 ' . 'split ' . g:wvu_draftpath
 	if s:fileexist == 0
-		let failed = append(0, "<<----草稿纸---->>")
+		let failed = <SID>AddTextToFile(0,"<<----草稿纸---->>")
 	endif
 	return
 endfunction
@@ -76,8 +92,59 @@ function! g:wvutils#version()
 	return	s:wvutils_version
 endfunction
 
+"
+" Test 函数用于自己测试使用
+function! <SID>Test()
+	let s:mylist = ['monday','friday','sunday']
+	call minifuctionsets#message(s:mylist,1)
+	call add(s:mylist,'english')
+	call minifuctionsets#message(s:mylist,1)
+
+	let s:newlist = ['winter','autumn','sprint']
+	call extend(s:newlist,['summer'])
+	call minifuctionsets#message(s:newlist,1)
+
+	" 打印每个list元素
+	for n in s:newlist
+		call minifuctionsets#message(n,1)
+	endfor
+	
+	call <SID>loaddata()
+endfunction
+
+" 在popupmenu中显示内容
+function! s:ListContain(contain)
+	call complete(col('.'), a:contain)
+	return ''
+endfunc
+
+" 将文件中的内容以pop的方式显示出来
+function! <SID>ListAccount()
+	" &的定义描述见该文件头部
+	if &filetype == 'ledger'
+		echo &ft
+		let s:desfile = '/home/kevin/vim-ledger/account.vim' 
+		let s:account=readfile(s:desfile,'')
+		call s:ListContain(s:account)
+	endif
+  	return ''
+endfunc
+
+" 载入数据
+function! <SID>loaddata()
+	let s:desfile = '/home/kevin/vim-ledger/account.vim' 
+	" 读取文件的插件
+	for line in readfile(s:desfile,'')
+		call minifuctionsets#message(line,1)
+	endfor
+endfunction
+
 " 自定义命令,注意命令的首字母必须要大写
 " :WvuFight <cr> 这样就能调用
 command! -nargs=0 WvuFight  call minifuctionsets#message("祝你好运",1)
-command! -nargs=0 WvuText   call s:AddTextToFile()
-command! -nargs=0 WvuDraft  call s:SplitDraft()
+command! -nargs=0 WvuText   call <SID>AddTextToFile(0,"Hello")
+command! -nargs=0 WvuDraft  call <SID>SplitDraft()
+command! -nargs=0 WvuTest  call <SID>Test()
+
+" 仅仅是F5就能调用这个函数
+inoremap <F5> <C-R>=<SID>ListAccount()<CR>
