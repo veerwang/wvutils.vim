@@ -135,6 +135,18 @@ function! <SID>findflag()
 	return s:flag
 endfunction
 
+" 显示日期
+function! <SID>EnterDate()
+	if &filetype == 'ledger'
+		let s:date = strftime("%Y/%b/%d")
+		let s:msg = input("输入抬头 ", s:date."      *")
+		let failed = append(line('.') - 1,s:msg)
+		return ''
+	else
+		return '/'
+	endif
+endfunction
+
 " 将文件中的内容以pop的方式显示出来
 function! <SID>ListAccount()
 	let s:refpath = '/.vim/plugged/wvutils.vim/data/'
@@ -176,3 +188,4 @@ command! -nargs=0 WvuTest  call <SID>findflag()
 " 在插入的状态下，键入:，并且如果是ledger文件类型
 " 就能调用这个函数
 inoremap : <C-R>=<SID>ListAccount()<CR>
+inoremap / <C-R>=<SID>EnterDate()<CR>
