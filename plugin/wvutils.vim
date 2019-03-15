@@ -109,13 +109,11 @@ function! <SID>Test()
 		call minifuctionsets#message(n,1)
 	endfor
 	
-	call <SID>loaddata()
 endfunction
 
 " 在popupmenu中显示内容
 function! s:ListContain(contain)
 	call complete(col('.'), a:contain)
-	" 添加':'
 	return ''
 endfunc
 
@@ -164,17 +162,9 @@ function! <SID>ListAccount()
 		call s:ListContain(s:newcontain)
   		return ''
 	endif
+	" 正常的非ledger文件格式的文件
 	return ':'
 endfunc
-
-" 载入数据
-function! <SID>loaddata()
-	let s:desfile = '/home/kevin/vim-ledger/account.vim' 
-	" 读取文件的插件
-	for line in readfile(s:desfile,'')
-		call minifuctionsets#message(line,1)
-	endfor
-endfunction
 
 " 自定义命令,注意命令的首字母必须要大写
 " :WvuFight <cr> 这样就能调用
