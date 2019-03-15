@@ -115,19 +115,56 @@ endfunction
 " 在popupmenu中显示内容
 function! s:ListContain(contain)
 	call complete(col('.'), a:contain)
+	" 添加':'
 	return ''
 endfunc
 
+" 查找:符号的函数
+function! <SID>findflag()
+	let s:linestr = getline(".")
+	let maxlength = len(s:linestr)
+	let s:flag = 0
+	if maxlength == 0
+		return s:flag
+	endif
+	let index = 1
+	while index != maxlength
+		let index = index + 1
+		if s:linestr[index] == ':'
+			let s:flag = s:flag + 1
+		endif
+	endwhile
+	return s:flag
+endfunction
+
 " 将文件中的内容以pop的方式显示出来
 function! <SID>ListAccount()
+	let s:refpath = '/.vim/plugged/wvutils.vim/data/'
+	let s:accountscripts = ['gaccount.vim','saccount.vim','ssaccount.vim','empty.vim']
 	" &的定义描述见该文件头部
+	" s:mflag 只有3级
 	if &filetype == 'ledger'
-		echo &ft
-		let s:desfile = '/home/kevin/vim-ledger/account.vim' 
+		let s:mflag = <SID>findflag()
+		if s:mflag > 4 
+			let s:mflag = 4 
+		endif
+		let s:desfile = $HOME.s:refpath.s:accountscripts[s:mflag]
 		let s:account=readfile(s:desfile,'')
-		call s:ListContain(s:account)
+		let s:newcontain = ['']
+		let s:empty = ''
+
+		if s:mflag < 2
+			let s:empty = ':'
+		endif
+
+		for n in s:account
+			call add(s:newcontain,n.s:empty)
+		endfor
+
+		call s:ListContain(s:newcontain)
+  		return ''
 	endif
-  	return ''
+	return ':'
 endfunc
 
 " 载入数据
@@ -144,7 +181,8 @@ endfunction
 command! -nargs=0 WvuFight  call minifuctionsets#message("祝你好运",1)
 command! -nargs=0 WvuText   call <SID>AddTextToFile(0,"Hello")
 command! -nargs=0 WvuDraft  call <SID>SplitDraft()
-command! -nargs=0 WvuTest  call <SID>Test()
+command! -nargs=0 WvuTest  call <SID>findflag()
 
-" 仅仅是F5就能调用这个函数
-inoremap <F5> <C-R>=<SID>ListAccount()<CR>
+" 在插入的状态下，键入:，并且如果是ledger文件类型
+" 就能调用这个函数
+inoremap : <C-R>=<SID>ListAccount()<CR>
