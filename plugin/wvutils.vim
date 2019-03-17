@@ -23,14 +23,13 @@ endif
 let g:wvutils_exits = 1
 
 " 避免一个插件被加载多次
-
-" 在当前打开的文件下，写入一个字符串
-" <SID> 的作用是使得函数生成一个唯一的ID数值
-function! <SID>AddTextToFile(pos,astring)
-	let failed = append(a:pos, a:astring)
-	return
+function! <SID>AddComment()
+	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
+	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
+	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
 endfunction
 
+" 打开一个草稿文件
 function! <SID>SplitDraft()
 	if !exists('g:wvu_draftpath')
 		let g:wvu_draftpath = '/home/kevin/.vim/__DRAFT__'
@@ -51,7 +50,7 @@ function! <SID>SplitDraft()
 
 	silent! execute 'vertical ' . '35 ' . 'split ' . g:wvu_draftpath
 	if s:fileexist == 0
-		let failed = <SID>AddTextToFile(0,"<<----草稿纸---->>")
+		let failed = call  minifuctionsets#appendtexttofile(0,"<<----草稿纸---->>")
 	endif
 	return
 endfunction
@@ -109,6 +108,9 @@ function! <SID>Test()
 		call minifuctionsets#message(n,1)
 	endfor
 	
+	" 这条语句很重要，在当前状态下，
+	execute 'normal ' . 'G'
+	execute 'normal ' . '$a' . '句子尾部加入'
 endfunction
 
 " 在popupmenu中显示内容
@@ -138,8 +140,8 @@ endfunction
 " 显示日期
 function! <SID>EnterDate()
 	if &filetype == 'ledger'
-		let s:date = strftime("%Y/%b/%d")
-		let s:msg = input("输入抬头 ", s:date."      *")
+		let s:date = strftime("%Y/%m/%d")
+		let s:msg = input("输入凭证 ", s:date."\<Tab>\<Tab>".'*')
 		let failed = append(line('.') - 1,s:msg)
 		return ''
 	else
@@ -155,8 +157,8 @@ function! <SID>ListAccount()
 	" s:mflag 只有3级
 	if &filetype == 'ledger'
 		let s:mflag = <SID>findflag()
-		if s:mflag > 4 
-			let s:mflag = 4 
+		if s:mflag > 4
+			let s:mflag = 4
 		endif
 		let s:desfile = $HOME.s:refpath.s:accountscripts[s:mflag]
 		let s:account=readfile(s:desfile,'')
@@ -165,6 +167,9 @@ function! <SID>ListAccount()
 
 		if s:mflag < 2
 			let s:empty = ':'
+		elseif s:mflag == 2
+			" 注意转意字符一定要用双引号
+			let s:empty = "\<Tab>\<Tab>".'￥'
 		endif
 
 		for n in s:account
@@ -180,10 +185,11 @@ endfunc
 
 " 自定义命令,注意命令的首字母必须要大写
 " :WvuFight <cr> 这样就能调用
-command! -nargs=0 WvuFight  call minifuctionsets#message("祝你好运",1)
-command! -nargs=0 WvuText   call <SID>AddTextToFile(0,"Hello")
-command! -nargs=0 WvuDraft  call <SID>SplitDraft()
-command! -nargs=0 WvuTest  call <SID>findflag()
+command! -nargs=0 WvuFight    call minifuctionsets#message("祝你好运",1)
+command! -nargs=0 WvuText     call minifuctionsets#appendtexttofile(0,"hello")
+command! -nargs=0 WvuDraft    call <SID>SplitDraft()
+command! -nargs=0 WvuComment  call <SID>AddComment()
+command! -nargs=0 WvuTest     call <SID>Test()
 
 " 在插入的状态下，键入:，并且如果是ledger文件类型
 " 就能调用这个函数

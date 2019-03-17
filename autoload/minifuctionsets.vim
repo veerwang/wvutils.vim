@@ -27,3 +27,10 @@ function! minifuctionsets#message(arg,flag)
 	endif
 	return
 endfunction
+
+" 在当前打开的文件下，写入一个字符串
+" 的作用是使得函数生成一个唯一的ID数值
+function! minifuctionsets#appendtexttofile(pos,astring)
+	let failed = append(a:pos, a:astring)
+	return
+endfunction
