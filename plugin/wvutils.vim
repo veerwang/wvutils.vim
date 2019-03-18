@@ -16,6 +16,10 @@
 "“a:”——函数的参数；
 "“v:”——Vim 内部预定义的特殊变量（参见“:help vim-variable”）。
 
+" 这条语句很重要，在当前状态下，
+"execute 'normal ' . 'G'
+"execute 'normal ' . '$a' . '句子尾部加入'
+
 " 避免一个插件被加载多次
 if exists('g:wvutils_exits') 
 	finish
@@ -94,23 +98,24 @@ endfunction
 "
 " Test 函数用于自己测试使用
 function! <SID>Test()
-	let s:mylist = ['monday','friday','sunday']
-	call minifuctionsets#message(s:mylist,1)
-	call add(s:mylist,'english')
-	call minifuctionsets#message(s:mylist,1)
+	" 显示window的编号
+	let winnu = winnr()
+	echo winnu
 
-	let s:newlist = ['winter','autumn','sprint']
-	call extend(s:newlist,['summer'])
-	call minifuctionsets#message(s:newlist,1)
+	"let s:mylist = ['monday','friday','sunday']
+	"call minifuctionsets#message(s:mylist,1)
+	"call add(s:mylist,'english')
+	"call minifuctionsets#message(s:mylist,1)
 
-	" 打印每个list元素
-	for n in s:newlist
-		call minifuctionsets#message(n,1)
-	endfor
+	"let s:newlist = ['winter','autumn','sprint']
+	"call extend(s:newlist,['summer'])
+	"call minifuctionsets#message(s:newlist,1)
+
+	"" 打印每个list元素
+	"for n in s:newlist
+	"	call minifuctionsets#message(n,1)
+	"endfor
 	
-	" 这条语句很重要，在当前状态下，
-	execute 'normal ' . 'G'
-	execute 'normal ' . '$a' . '句子尾部加入'
 endfunction
 
 " 在popupmenu中显示内容
