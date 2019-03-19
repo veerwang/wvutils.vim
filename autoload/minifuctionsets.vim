@@ -1,8 +1,12 @@
 " 将一些通用的函数，进行整合 
 " 注意放在autoload目录下的文件，可以被自动加载
+" 注意，在autoload目录下的文件并不是一开始就被加载的，只有等到
+" 需要的时候才能被加载,可以叫作延迟加载
 " Last Change:	2019.03.09
 " Maintainer:   kevin.wang kevin.wang2004@hotmail.com	
 " License:	This file is placed in the public domain.
+
+scriptencoding utf-8
 
 " 避免一个插件被加载多次
 if exists('g:minifuctionsets_exits') 

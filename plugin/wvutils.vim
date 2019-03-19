@@ -3,30 +3,15 @@
 " Maintainer:   kevin.wang kevin.wang2004@hotmail.com	
 " License:	This file is placed in the public domain.
 
-" 变量说明
-"“$”——访问环境变量；
-"“&”——访问 Vim 选项；
-"“@”——访问寄存器。
-"
-"
-"“b:”——只对当前缓冲区（buffer）有效的变量；
-"“w:”——只对当前编辑窗口（window）有效的变量。
-"“g:”——全局变量（在函数中访问全局变量必须使用该前缀，不加前缀的话则认为是函数内的局部变量）；
-"“s:”——变量名只在当前脚本中有效；
-"“a:”——函数的参数；
-"“v:”——Vim 内部预定义的特殊变量（参见“:help vim-variable”）。
-
-" 这条语句很重要，在当前状态下，
-"execute 'normal ' . 'G'
-"execute 'normal ' . '$a' . '句子尾部加入'
-
 " 避免一个插件被加载多次
+
+scriptencoding utf-8
+
 if exists('g:wvutils_exits') 
 	finish
 endif
 let g:wvutils_exits = 1
 
-" 避免一个插件被加载多次
 function! <SID>AddComment()
 	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
 	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
@@ -47,14 +32,19 @@ function! <SID>SplitDraft()
 		"是否重新创建新草稿纸
 		let s:load_oldpaper=confirm("是否载入旧草稿纸?","&Yes\n&No",2)
 		if s:load_oldpaper == 2
-			let s:fileexist = 0
-			call delete(g:wvu_draftpath)
+			let s:delete_oldpaper=confirm("要删除旧草稿纸内容了?","&Yes\n&No",2)
+			if 	s:delete_oldpaper == 2
+				return
+			elseif s:delete_oldpaper == 1
+				let s:fileexist = 0
+				call delete(g:wvu_draftpath)
+			endif
 		endif
 	endif
 
 	silent! execute 'vertical ' . '35 ' . 'split ' . g:wvu_draftpath
 	if s:fileexist == 0
-		let failed = call  minifuctionsets#appendtexttofile(0,"<<----草稿纸---->>")
+		let failed = minifuctionsets#appendtexttofile(0,"<<----草稿纸---->>")
 	endif
 	return
 endfunction
@@ -66,13 +56,6 @@ if !exists('s:wvutils_version')
 	let s:wvutils_version = 'v1.0.0(init)'
 endif
 "call minifuctionsets#version("wvutils plugins version: ".s:wvutils_version,0)
-
-" 休眠时间，以毫秒计算
-"sleep 40m
-
-" 得到一个临时文件的名称
-"let s:tmpfile = tempname()
-"call minifuctionsets#version('生产一个临时文件：'.s:tmpfile,0)
 
 "　输入字符串
 "let s:inputmsg = input('输入想要保存的内容: ')
@@ -98,25 +81,52 @@ endfunction
 "
 " Test 函数用于自己测试使用
 function! <SID>Test()
-	" 显示window的编号
-	let winnu = winnr()
-	echo winnu
-
-	"let s:mylist = ['monday','friday','sunday']
-	"call minifuctionsets#message(s:mylist,1)
-	"call add(s:mylist,'english')
-	"call minifuctionsets#message(s:mylist,1)
-
-	"let s:newlist = ['winter','autumn','sprint']
-	"call extend(s:newlist,['summer'])
-	"call minifuctionsets#message(s:newlist,1)
-
-	"" 打印每个list元素
-	"for n in s:newlist
-	"	call minifuctionsets#message(n,1)
+	" 每一个dictionary 包含一个key-value对
+	" 之间用colon(冒号)分离
+	" 注意 key 都是字符串,就算是数字，也是字符串
+	"let mydict = { 1:'hello', 2:'second', 'kevin':'wangwei' }
+	"call minifuctionsets#message(mydict[1],1)
+	"call minifuctionsets#message(mydict[2],1)
+	"call minifuctionsets#message(mydict['kevin'],1)
+	"for key in keys(mydict)
+	"	call minifuctionsets#message(key . ' : ' . mydict[key],1)
 	"endfor
-	
+	"for v in values(mydict)
+	"	call minifuctionsets#message(v,1)
+	"endfor
+	"let accountdict = { '收入':{ '工资':['公司薪资','分红'],'福利':['福利卡','购物卡','补贴'],'理财':['股票','建行理财','余额宝'] }, '支出':{ '饮食':['早餐','晚餐','中餐'],'交通':['私家车','汽油','年检'],'人情':['红包'] }, '资产':{ '父母财产':['红包','赠与'],'期初导入':['上年结余','夫妻财产'] } }
+
+	"for k1 in keys(accountdict)
+	"	for  k2 in keys(accountdict[k1])
+	"		call minifuctionsets#message(accountdict[k1][k2],1)
+	"	endfor
+	"endfor
 endfunction
+
+fun! CompleteMonths(findstart, base)
+	if a:findstart
+		" locate the start of the word
+		let line = getline('.')
+		let start = col('.') - 1
+		while start > 0 && line[start - 1] =~ '\a'
+			let start -= 1
+		endwhile
+		return start
+	else
+		" find months matching with "a:base"
+		for m in split("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec")
+			if m =~ '^' . a:base
+				call complete_add(m)
+			endif
+			sleep 300m	" simulate searching for next match
+			if complete_check()
+				break
+			endif
+		endfor
+		return []
+	endif
+endfun
+set completefunc=CompleteMonths
 
 " 在popupmenu中显示内容
 function! s:ListContain(contain)
