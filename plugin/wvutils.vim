@@ -101,6 +101,10 @@ function! <SID>Test()
 	"		call minifuctionsets#message(accountdict[k1][k2],1)
 	"	endfor
 	"endfor
+	"let color = inputlist(['Select color:', '1. red',
+	"	\ '2. green', '3. blue'])
+	"call minifuctionsets#message("当前颜色:".color,1)
+	call pythonfunctionset#pythonprint("hello")
 endfunction
 
 fun! CompleteMonths(findstart, base)
