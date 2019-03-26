@@ -6,6 +6,9 @@
 scriptencoding utf-8
 
 function! pythonfunctionset#pythonprint(str)
+	if has('python') == 0 && has('python3') == 0 
+		return	
+	endif
 python << EOF
 import vim
 print( "this is python module --> " + vim.eval("a:str") )
