@@ -14,3 +14,17 @@ import vim
 print( "this is python module --> " + vim.eval("a:str") )
 EOF
 endfunction
+
+function! pythonfunctionset#pythonadd(x,y)
+	if has('python') == 0 && has('python3') == 0 
+		return	
+	endif
+python << EOF
+import vim
+px = vim.eval('a:x')
+py = vim.eval('a:y')
+result = int(px) + int(py)
+print( "this is python module --> " + result )
+EOF
+	return result 
+endfunction

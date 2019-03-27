@@ -3,14 +3,18 @@
 " Maintainer:   kevin.wang kevin.wang2004@hotmail.com	
 " License:	This file is placed in the public domain.
 
-" 避免一个插件被加载多次
-
 scriptencoding utf-8
 
+" 避免一个插件被加载多次
 if exists('g:wvutils_exits') 
 	finish
 endif
 let g:wvutils_exits = 1
+
+" 避免扩展命令运行
+if (v:progname == "ex")
+   finish
+endif
 
 function! <SID>AddComment()
 	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
@@ -103,8 +107,8 @@ function! <SID>Test()
 	"endfor
 	"let color = inputlist(['Select color:', '1. red',
 	"	\ '2. green', '3. blue'])
-	"call minifuctionsets#message("当前颜色:".color,1)
-	call pythonfunctionset#pythonprint("hello")
+	let s:result = pythonfunctionset#pythonadd(10,11)
+	call minifuctionsets#message("x + y = ".s:result,1)
 endfunction
 
 fun! CompleteMonths(findstart, base)
