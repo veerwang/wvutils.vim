@@ -24,8 +24,9 @@ endfunction
 function! minifuctionsets#message(arg,flag)
 	if a:flag == 1
 		echohl Title " 高亮以下内容 注意以下一定要a:打头，否者调用不到arg这个内部变量
-	endif
-	echo a:arg
+	endif  	
+	"使用echomsg命令的目的是将日志显示在message区域当中,使用message可以查看
+	echomsg a:arg
 	if a:flag == 1
 		echohl None  " 结束高亮显示
 	endif
