@@ -12,14 +12,14 @@ if exists('g:wvutils_exits')
 endif
 let g:wvutils_exits = 1
 
-function! <SID>AddComment()
+function! <SID>AddComment() abort
 	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
 	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
 	call minifuctionsets#appendtexttofile(line('.') - 1,'//')
 endfunction
 
 " 打开一个草稿文件
-function! <SID>SplitDraft()
+function! <SID>SplitDraft() abort
 	if !exists('g:wvu_draftpath')
 		let g:wvu_draftpath = '/home/kevin/.vim/__DRAFT__'
 	endif
@@ -71,16 +71,16 @@ endif
 " 对外提供的接口函数
 " 注意此处的定义方式
 "call wvutils#welcome()
-function! g:wvutils#welcome()
+function! g:wvutils#welcome() abort
 	call minifuctionsets#message("当前wvutils模块的版本:".s:wvutils_version,1)
 endfunction
-function! g:wvutils#version()
+function! g:wvutils#version() abort
 	return	s:wvutils_version
 endfunction
 
 "
 " Test 函数用于自己测试使用
-function! <SID>Test()
+function! <SID>Test() abort
 	" 每一个dictionary 包含一个key-value对
 	" 之间用colon(冒号)分离
 	" 注意 key 都是字符串,就算是数字，也是字符串
@@ -107,7 +107,7 @@ function! <SID>Test()
 	"call pythonfunctionset#pythonprint("hello")
 endfunction
 
-fun! CompleteMonths(findstart, base)
+fun! CompleteMonths(findstart, base) abort
 	if a:findstart
 		" locate the start of the word
 		let line = getline('.')
@@ -133,13 +133,13 @@ endfun
 set completefunc=CompleteMonths
 
 " 在popupmenu中显示内容
-function! s:ListContain(contain)
+function! s:ListContain(contain) abort
 	call complete(col('.'), a:contain)
 	return ''
 endfunc
 
 " 查找:符号的函数
-function! <SID>findflag()
+function! <SID>findflag() abort
 	let s:linestr = getline(".")
 	let maxlength = len(s:linestr)
 	let s:flag = 0
@@ -157,7 +157,7 @@ function! <SID>findflag()
 endfunction
 
 " 显示日期
-function! <SID>EnterDate()
+function! <SID>EnterDate() abort
 	if &filetype == 'ledger'
 		let s:date = strftime("%Y/%m/%d")
 		let s:msg = input("输入凭证 ", s:date."\<Tab>\<Tab>".'*')
@@ -169,7 +169,7 @@ function! <SID>EnterDate()
 endfunction
 
 " 将文件中的内容以pop的方式显示出来
-function! <SID>ListAccount()
+function! <SID>ListAccount() abort
 	let s:refpath = '/.vim/plugged/wvutils.vim/data/'
 	let s:accountscripts = ['gaccount.vim','saccount.vim','ssaccount.vim','empty.vim']
 	" &的定义描述见该文件头部
