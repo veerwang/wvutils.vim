@@ -21,11 +21,12 @@ endfunction
 " 进行字符串的显示，如果flag == 1,显示高亮
 "                   如果flag == 0,普通显示
 " !表示这个函数可以被安全的重载
-function! minifuctionsets#message(arg,flag)
+function! minifuctionsets#message(arg,flag) abort
 	if a:flag == 1
 		echohl Title " 高亮以下内容 注意以下一定要a:打头，否者调用不到arg这个内部变量
-	endif
-	echo a:arg
+	endif  	
+	"使用echomsg命令的目的是将日志显示在message区域当中,使用message可以查看
+	echomsg a:arg
 	if a:flag == 1
 		echohl None  " 结束高亮显示
 	endif
@@ -34,7 +35,7 @@ endfunction
 
 " 在当前打开的文件下，写入一个字符串
 " 的作用是使得函数生成一个唯一的ID数值
-function! minifuctionsets#appendtexttofile(pos,astring)
+function! minifuctionsets#appendtexttofile(pos,astring) abort
 	let failed = append(a:pos, a:astring)
 	return
 endfunction
