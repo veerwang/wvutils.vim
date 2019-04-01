@@ -206,13 +206,24 @@ function! <SID>ListAccount() abort
 	return ':'
 endfunc
 
+func TimerProcess(timer)
+	echo 'Handler called'
+endfunc
+function! <SID>StartTimer(meclips)
+	let s:eclips = a:meclips * 1000
+	let timer = timer_start(s:eclips, 'TimerProcess', {'repeat': 3})
+endfunction
+
 " 自定义命令,注意命令的首字母必须要大写
 " :WvuFight <cr> 这样就能调用
-command! -nargs=0 WvuFight    call minifuctionsets#message("祝你好运",1)
-command! -nargs=0 WvuText     call minifuctionsets#appendtexttofile(0,"hello")
-command! -nargs=0 WvuDraft    call <SID>SplitDraft()
-command! -nargs=0 WvuComment  call <SID>AddComment()
-command! -nargs=0 WvuTest     call <SID>Test()
+command! -nargs=0 WvuFight    		call minifuctionsets#message("祝你好运",1)
+command! -nargs=0 WvuText     		call minifuctionsets#appendtexttofile(0,"hello")
+command! -nargs=0 WvuDraft    		call <SID>SplitDraft()
+command! -nargs=0 WvuComment  		call <SID>AddComment()
+command! -nargs=0 WvuTest     		call <SID>Test()
+" 添加需要函数参数的命令
+" 需要添加秒数为参数
+command! -nargs=1 WvuStartTimer     	call <SID>StartTimer(<args>)
 
 " 在插入的状态下，键入:，并且如果是ledger文件类型
 " 就能调用这个函数
